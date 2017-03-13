@@ -28,6 +28,15 @@ function openLightbox (content, canNavigate, navigate, id) {
     lightbox.setAttribute('id', id);
   }
 
+  var closeButton = document.createElement('a');
+  closeButton.setAttribute('class', 'tagplay-lightbox-close');
+  closeButton.setAttribute('href', '#');
+  closeButton.innerHTML = '&times;';
+  closeButton.onclick = function () {
+    closeLightbox();
+    return false;
+  };
+
   document.body.originalOverflow = document.body.style.overflow;
   document.body.style.overflow = 'hidden';
 
@@ -53,6 +62,7 @@ function openLightbox (content, canNavigate, navigate, id) {
     if (shouldClose) closeLightbox();
   };
 
+  backdrop.appendChild(closeButton);
   backdrop.appendChild(lightbox);
   document.body.appendChild(backdrop);
   backdrop.focus();
