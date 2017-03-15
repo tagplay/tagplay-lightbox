@@ -5,7 +5,8 @@ module.exports = {
   close: closeLightbox
 };
 
-function openLightbox (content, canNavigate, navigate, id) {
+function openLightbox (content, canNavigate, navigate, id, onClose) {
+  // We're not actually closing-closing the lightbox here, so don't pass the onClose callback
   closeLightbox();
 
   var backdrop = document.createElement('div');
@@ -18,7 +19,7 @@ function openLightbox (content, canNavigate, navigate, id) {
     } else if (e.keyCode === 39) {
       navigate(1);
     } else if (e.keyCode === 27) {
-      closeLightbox();
+      closeLightbox(onClose);
     }
   };
 
@@ -33,7 +34,7 @@ function openLightbox (content, canNavigate, navigate, id) {
   closeButton.setAttribute('href', '#');
   closeButton.innerHTML = '&times;';
   closeButton.onclick = function () {
-    closeLightbox();
+    closeLightbox(onClose);
     return false;
   };
 
@@ -59,7 +60,7 @@ function openLightbox (content, canNavigate, navigate, id) {
       }
       currentTarget = currentTarget.parentNode;
     }
-    if (shouldClose) closeLightbox();
+    if (shouldClose) closeLightbox(onClose);
   };
 
   backdrop.appendChild(closeButton);
@@ -68,14 +69,17 @@ function openLightbox (content, canNavigate, navigate, id) {
   backdrop.focus();
 }
 
-function closeLightbox () {
+function closeLightbox (callback) {
   var existingBackdrop = document.getElementsByClassName('tagplay-lightbox-backdrop');
   if (existingBackdrop.length > 0) {
     for (var i = 0; i < existingBackdrop.length; i++) {
       document.body.removeChild(existingBackdrop[i]);
     }
     document.body.style.overflow = document.body.originalOverflow || 'auto';
+    if (callback) callback();
+    return true;
   }
+  return false;
 }
 
 function arrow (direction, navigate, className) {
